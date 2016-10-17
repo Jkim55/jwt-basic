@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{title}}</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    {{{body}}}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script type="text/javascript">
+      $("#newUserForm").submit((event) => {
+        event.preventDefault();
+        let newby = $("#newUserUsername").val()
+        $.post("/new", {newUser: newby})
+        .then((data) => {
+          console.log(data);
+          if (data.error) {
+            $("#errorMessage").text(data.error)
+          } else if (data.jwt) {
+            localStorage.setItem('jwt', data.jwt)
+            if (data.uid) {
+              localStorage.setItem('uid', data.uid)
+            }
+            window.location.replace('/')
+          }
+        })
+      })
+
+      $(document).ready(() => {
+        if (localStorage.getItem("uid")) {
+          console.log("a user is logged in as ",localStorage.getItem("uid"));
+          $('#titleHeader').text("Welcome back, "+localStorage.getItem("uid"));
+        }
+      })
+    </script>
+  </body>
+</html>
